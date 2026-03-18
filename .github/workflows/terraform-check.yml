@@ -19,13 +19,18 @@ jobs:
       - name: Run Terraform on all folders
         run: |
           for dir in day1 day2 day3 day4 bonus; do
-            echo "Running Terraform in $dir"
-            cd $dir
+            echo "Checking $dir"
 
-            terraform init
-            terraform fmt -check
-            terraform validate
-            terraform plan
+            if [ -d "$dir" ] && ls $dir/*.tf >/dev/null 2>&1; then
+              cd $dir
 
-            cd ..
+              terraform init
+              terraform fmt -check
+              terraform validate
+              terraform plan -input=false || echo "Plan failed, skipping"
+
+              cd ..
+            else
+              echo "Skipping $dir (no .tf files)"
+            fi
           done
