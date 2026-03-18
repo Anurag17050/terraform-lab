@@ -16,14 +16,16 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Terraform Init
-        run: terraform init
+      - name: Run Terraform on all folders
+        run: |
+          for dir in day1 day2 day3 day4 bonus; do
+            echo "Running Terraform in $dir"
+            cd $dir
 
-      - name: Terraform Format
-        run: terraform fmt -check
+            terraform init
+            terraform fmt -check
+            terraform validate
+            terraform plan
 
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        run: terraform plan
+            cd ..
+          done
